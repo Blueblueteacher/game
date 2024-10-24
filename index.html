@@ -6,7 +6,14 @@
     <title>똥 피하기 게임</title>
     <style>
         body { margin: 0; overflow: hidden; }
-        canvas { background-color: black; display: block; margin: 0 auto; }
+        canvas {
+            background-color: black;
+            display: block;
+            margin: 0;
+            padding: 0;
+            width: 100vw;  /* 뷰포트 너비에 맞춤 */
+            height: 100vh;  /* 뷰포트 높이에 맞춤 */
+        }
         #retryBtn {
             display: none;
             position: absolute;
@@ -31,14 +38,19 @@
         const ctx = canvas.getContext('2d');
         const retryBtn = document.getElementById('retryBtn');
 
-        // 캔버스 크기를 화면 비율에 맞춰 설정
+        // 기본 해상도 설정
+        const baseWidth = 600;
+        const baseHeight = 800;
+
+        let scaleFactorX = canvas.width / baseWidth;
+        let scaleFactorY = canvas.height / baseHeight;
+
+        // 캔버스 크기를 화면 크기에 맞게 조정
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-
-            // 모든 요소가 비율에 맞춰지도록 크기 조정
-            scaleFactorX = canvas.width / 600;  // 기본 너비 600
-            scaleFactorY = canvas.height / 800;  // 기본 높이 800
+            scaleFactorX = canvas.width / baseWidth;
+            scaleFactorY = canvas.height / baseHeight;
         }
 
         window.addEventListener('resize', resizeCanvas);
@@ -123,7 +135,7 @@
         function displayScore() {
             ctx.fillStyle = 'white';
             ctx.font = `${20 * scaleFactorY}px Arial`;
-            ctx.fillText(`Score: ${score}`, 10, 30 * scaleFactorY);
+            ctx.fillText(`Score: ${score}`, 10 * scaleFactorX, 30 * scaleFactorY);
         }
 
         function clearCanvas() {
@@ -165,7 +177,7 @@
         }
 
         function init() {
-            // 키보드 및 터치 이벤트 추가
+            // 터치 이벤트 추가
             canvas.addEventListener('touchstart', handleTouchStart);
             canvas.addEventListener('touchend', handleTouchEnd);
 
