@@ -12,7 +12,7 @@
             margin: 0;
             padding: 0;
             width: 100vw;  /* 뷰포트 너비에 맞춤 */
-            height: 80vh;  /* 뷰포트 높이의 80%로 설정하여 더 많은 공간 확보 */
+            height: 80vh;  /* 뷰포트 높이의 80%로 설정 */
         }
         #retryBtn {
             display: none;
@@ -42,8 +42,8 @@
         const baseWidth = 600;
         const baseHeight = 800;
 
-        let scaleFactorX = canvas.width / baseWidth;
-        let scaleFactorY = canvas.height / baseHeight;
+        let scaleFactorX = 1;
+        let scaleFactorY = 1;
 
         // 캔버스 크기를 화면 크기에 맞게 조정
         function resizeCanvas() {
