@@ -30,13 +30,20 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const retryBtn = document.getElementById('retryBtn');
-        canvas.width = 600;
-        canvas.height = 800;
+
+        // 화면 크기에 맞게 캔버스 사이즈 조정
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();  // 처음 로드할 때도 캔버스 크기를 맞춤
 
         const playerImage = new Image();
-        playerImage.src = './character.png';  // 업로드된 캐릭터 이미지 사용
+        playerImage.src = './character.png';  
         const poopImage = new Image();
-        poopImage.src = './poop.png';  // 업로드된 똥 이미지 사용
+        poopImage.src = './poop.png';  
 
         const playerWidth = 50;
         const playerHeight = 60;
@@ -140,20 +147,6 @@
             player.dx = -player.speed;
         }
 
-        function keyDown(e) {
-            if (e.key === 'ArrowRight') {
-                moveRight();
-            } else if (e.key === 'ArrowLeft') {
-                moveLeft();
-            }
-        }
-
-        function keyUp(e) {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-                player.dx = 0;
-            }
-        }
-
         function handleTouchStart(e) {
             const touchX = e.touches[0].clientX;
             if (touchX < canvas.width / 2) {
@@ -168,14 +161,11 @@
         }
 
         function init() {
-            document.addEventListener('keydown', keyDown);
-            document.addEventListener('keyup', keyUp);
-
-            // 터치 이벤트 추가
+            // 키보드 및 터치 이벤트 추가
             canvas.addEventListener('touchstart', handleTouchStart);
             canvas.addEventListener('touchend', handleTouchEnd);
 
-            setInterval(createPoop, 1000); // 매초 똥 생성
+            setInterval(createPoop, 1000);  // 매초 똥 생성
             update();
         }
 
@@ -195,7 +185,7 @@
             gameOver = false;
 
             retryBtn.style.display = 'none';  // "다시 하기" 버튼 숨김
-            update();  // 게임 다시 시
+            update();  // 게임 다시 시작
         });
 
         init();
