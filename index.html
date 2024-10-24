@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>똥 피하기 게임</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { background-color: black; display: block; margin: 0 auto; }
+        #retryBtn {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            background-color: yellow;
+            color: black;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <button id="retryBtn">다시 하기</button>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const retryBtn = document.getElementById('retryBtn');
+        canvas.width = 600;
+        canvas.height = 800;
+
+        const playerImage = new Image();
+        playerImage.src = './character.png';  // 업로드된 캐릭터 이미지 사용
+        const poopImage = new Image();
+        poopImage.src = './poop.png';  // 업로드된 똥 이미지 사용
+
+        const playerWidth = 50;
+        const playerHeight = 60;
+        const poopWidth = 50;
+        const poopHeight = 50;
+
+        let player = {
+            x: canvas.width / 2 - playerWidth / 2,
+            y: canvas.height - playerHeight - 10,
+            width: playerWidth,
+            height: playerHeight,
+            speed: 5,
+            dx: 0
+        };
+
+        let poops = [];
+        let score = 0;
+        let gameOver = false;
+
+        function drawPlayer() {
+            ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+        }
+
+        function createPoop() {
+            let poop = {
+                x: Math.random() * (canvas.width - poopWidth),
+                y: -poopHeight,
+                width: poopWidth,
+                height: poopHeight,
+                speed: Math.random() * 3 + 2
+            };
+            poops.push(poop);
+        }
+
+        function drawPoops() {
+            poops.forEach((poop) => {
+                ctx.drawImage(poopImage, poop.x, poop.y, poop.width, poop.height);
+            });
+        }
+
+        function updatePoops() {
+            poops.forEach((poop, index) => {
+                poop.y += poop.speed;
+
+                if (poop.y + poop.height > canvas.height) {
+                    poops.splice(index, 1);
+                    score++;
+                }
+
+                // 플레이어와 충돌 여부 체크
+                if (
+                    poop.x < player.x + player.width &&
+                    poop.x + poop.width > player.x &&
+                    poop.y < player.y + player.height &&
+                    poop.y + poop.height > player.y
+                ) {
+                    gameOver = true;
+                    showGameOverScreen();
+                }
+            });
+        }
+
+        function updatePlayer() {
+            player.x += player.dx;
+
+            if (player.x < 0) {
+                player.x = 0;
+            } else if (player.x + player.width > canvas.width) {
+                player.x = canvas.width - player.width;
+            }
+        }
+
+        function displayScore() {
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Score: ${score}`, 10, 30);
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function update() {
+            if (gameOver) return;
+
+            clearCanvas();
+            drawPlayer();
+            drawPoops();
+            updatePoops();
+            updatePlayer();
+            displayScore();
+
+            requestAnimationFrame(update);
+        }
+
+        function moveRight() {
+            player.dx = player.speed;
+        }
+
+        function moveLeft() {
+            player.dx = -player.speed;
+        }
+
+        function keyDown(e) {
+            if (e.key === 'ArrowRight') {
+                moveRight();
+            } else if (e.key === 'ArrowLeft') {
+                moveLeft();
+            }
+        }
+
+        function keyUp(e) {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                player.dx = 0;
+            }
+        }
+
+        function handleTouchStart(e) {
+            const touchX = e.touches[0].clientX;
+            if (touchX < canvas.width / 2) {
+                moveLeft();
+            } else {
+                moveRight();
+            }
+        }
+
+        function handleTouchEnd() {
+            player.dx = 0;
+        }
+
+        function init() {
+            document.addEventListener('keydown', keyDown);
+            document.addEventListener('keyup', keyUp);
+
+            // 터치 이벤트 추가
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchend', handleTouchEnd);
+
+            setInterval(createPoop, 1000); // 매초 똥 생성
+            update();
+        }
+
+        function showGameOverScreen() {
+            ctx.fillStyle = 'white';
+            ctx.font = '50px Arial';
+            ctx.fillText('Game Over', canvas.width / 2 - 150, canvas.height / 2);
+            retryBtn.style.display = 'block';  // "다시 하기" 버튼 표시
+        }
+
+        retryBtn.addEventListener('click', function() {
+            // 게임 상태 초기화
+            player.x = canvas.width / 2 - playerWidth / 2;
+            player.y = canvas.height - playerHeight - 10;
+            poops = [];
+            score = 0;
+            gameOver = false;
+
+            retryBtn.style.display = 'none';  // "다시 하기" 버튼 숨김
+            update();  // 게임 다시 시작
+        });
+
+        init();
+    </script>
+</body>
+</html>
