@@ -139,8 +139,8 @@
 
         function displayScore() {
             ctx.fillStyle = 'white';
-            ctx.font = ${20 * scaleFactorY}px Arial;
-            ctx.fillText(Score: ${score}, 10 * scaleFactorX, 30 * scaleFactorY);
+            ctx.font = `${20 * scaleFactorY}px Arial`;
+            ctx.fillText(`Score: ${score}`, 10 * scaleFactorX, 30 * scaleFactorY);
         }
 
         function clearCanvas() {
@@ -192,7 +192,7 @@
 
         function showGameOverScreen() {
             ctx.fillStyle = 'white';
-            ctx.font = ${50 * scaleFactorY}px Arial;
+            ctx.font = `${50 * scaleFactorY}px Arial`;
             ctx.fillText('Game Over', canvas.width / 2 - 150 * scaleFactorX, canvas.height / 2);
             retryBtn.style.display = 'block';  // "다시 하기" 버튼 표시
         }
