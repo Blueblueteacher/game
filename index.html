@@ -12,7 +12,7 @@
             margin: 0;
             padding: 0;
             width: 100vw;  /* 뷰포트 너비에 맞춤 */
-            height: 100vh;  /* 뷰포트 높이에 맞춤 */
+            height: 90vh;  /* 뷰포트 높이의 90%로 설정하여 하단 내비게이션 바 공간 확보 */
         }
         #retryBtn {
             display: none;
@@ -48,9 +48,14 @@
         // 캔버스 크기를 화면 크기에 맞게 조정
         function resizeCanvas() {
             canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.height = window.innerHeight * 0.9;  // 전체 높이의 90%로 설정
             scaleFactorX = canvas.width / baseWidth;
             scaleFactorY = canvas.height / baseHeight;
+
+            // 캐릭터와 똥의 크기도 조정
+            player.width = playerWidth * scaleFactorX;
+            player.height = playerHeight * scaleFactorY;
+            player.y = canvas.height - player.height - 20;  // 바닥에 붙지 않게 위치 조정
         }
 
         window.addEventListener('resize', resizeCanvas);
@@ -68,7 +73,7 @@
 
         let player = {
             x: canvas.width / 2 - playerWidth * scaleFactorX / 2,
-            y: canvas.height - playerHeight * scaleFactorY - 10,
+            y: canvas.height - playerHeight * scaleFactorY - 20,  // 화면 바닥에서 약간 띄움
             width: playerWidth * scaleFactorX,
             height: playerHeight * scaleFactorY,
             speed: 5 * scaleFactorX,
@@ -195,7 +200,7 @@
         retryBtn.addEventListener('click', function() {
             // 게임 상태 초기화
             player.x = canvas.width / 2 - player.width / 2;
-            player.y = canvas.height - player.height - 10;
+            player.y = canvas.height - player.height - 20;
             poops = [];
             score = 0;
             gameOver = false;
