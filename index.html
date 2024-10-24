@@ -42,6 +42,17 @@
         const baseWidth = 600;
         const baseHeight = 800;
 
+        const playerWidth = 50;
+        const playerHeight = 60;
+        let player = {
+            x: 0,  // 초기 위치
+            y: 0,  // 초기 위치
+            width: playerWidth,
+            height: playerHeight,
+            speed: 5,
+            dx: 0
+        };
+
         let scaleFactorX = canvas.width / baseWidth;
         let scaleFactorY = canvas.height / baseHeight;
 
@@ -52,9 +63,10 @@
             scaleFactorX = canvas.width / baseWidth;
             scaleFactorY = canvas.height / baseHeight;
 
-            // 캐릭터와 똥의 크기도 조정
-            player.width = playerWidth * scaleFactorX * 0.8;  // 캐릭터 크기를 줄임
+            // 캐릭터의 크기와 위치 조정
+            player.width = playerWidth * scaleFactorX * 0.8;
             player.height = playerHeight * scaleFactorY * 0.8;
+            player.x = canvas.width / 2 - player.width / 2;
             player.y = canvas.height - player.height - 20;  // 바닥에 붙지 않게 위치 조정
         }
 
@@ -66,20 +78,6 @@
         const poopImage = new Image();
         poopImage.src = './poop.png';  
 
-        const playerWidth = 50;
-        const playerHeight = 60;
-        const poopWidth = 50;
-        const poopHeight = 50;
-
-        let player = {
-            x: canvas.width / 2 - playerWidth * scaleFactorX / 2,
-            y: canvas.height - playerHeight * scaleFactorY - 20,  // 화면 바닥에서 약간 띄움
-            width: playerWidth * scaleFactorX * 0.8,  // 캐릭터 크기를 조금 줄임
-            height: playerHeight * scaleFactorY * 0.8,
-            speed: 5 * scaleFactorX,
-            dx: 0
-        };
-
         let poops = [];
         let score = 0;
         let gameOver = false;
@@ -90,10 +88,10 @@
 
         function createPoop() {
             let poop = {
-                x: Math.random() * (canvas.width - poopWidth * scaleFactorX),
-                y: -poopHeight * scaleFactorY,
-                width: poopWidth * scaleFactorX * 0.8,  // 똥 크기도 조금 줄임
-                height: poopHeight * scaleFactorY * 0.8,
+                x: Math.random() * (canvas.width - 50 * scaleFactorX),
+                y: -50 * scaleFactorY,
+                width: 50 * scaleFactorX * 0.8,
+                height: 50 * scaleFactorY * 0.8,
                 speed: (Math.random() * 3 + 2) * scaleFactorY
             };
             poops.push(poop);
